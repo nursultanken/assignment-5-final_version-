@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: data
+  name: data
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data
+  template:
+    metadata:
+      labels:
+        app: data
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        - name: MYSQL_DATABASE
+          value: mydatabase
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: data-secret
+              key: password
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: data-secret
+              key: rootpassword
+        - name: MYSQL_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: data-secret
+              key: username
+        image: amanasangulov/quotes-data:v5
+        ports:
+        - containerPort: 3306
+        name: database
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          subPath: mysql
+          name: quotes-data
+      volumes:
+      - name: quotes-data
+        persistentVolumeClaim:
+          claimName: data-pvc
+      restartPolicy: Always
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: data
+spec:
+  ports:
+  - name: "3306"
+    port: 3306
+    targetPort: 3306
+  selector:
+    app: data
