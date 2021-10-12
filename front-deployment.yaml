@@ -15,7 +15,7 @@ spec:
         app: front
     spec:
       containers:
-      - image: amanasangulov/quotes-front:v5
+      - image: nursultanken/quotes-front:v2
         name: front
         ports:
         - containerPort: 3001

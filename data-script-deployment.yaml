@@ -15,7 +15,7 @@ spec:
         app: data-script
     spec:
       containers:
-      - image: amanasangulov/quotes-data-script:v5
+      - image: nursultanken/quotes-data-script:v2
         name: data-script
         env:
           - name: MYSQL_DB_HOST
@@ -35,7 +35,7 @@ spec:
                 key: password
       initContainers:
        - name: init-datascript
-         image: amanasangulov/quotes-data-script:v5
+         image: nursultanken/quotes-data-script:v2
          command: ['sh', '-c', "until mysql -h ${MYSQL_DB_HOST} -u ${MYSQL_USER} -p${MYSQL_USER_PASSWORD} -e 'show databases;'; do echo waiting for mydb; sleep 2; done"]
          env:
           - name: MYSQL_DB_HOST
